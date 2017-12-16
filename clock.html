@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style>
+		body{
+			background: #fff;
+		}
+		.content{
+			text-align: center;
+		}
+	</style>
+	<body>
+		<div class="content">
+			
+		</div>
+		
+	</body>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript">	
+		// console.log($('#box'))
+	
+		// new Clock('b')
+		function Clock(selector,options){
+
+			this.clock = $('<canvas id="'+selector+'"></canvas>')[0] //生成.clock div
+			// console.log(this.clock)
+			$('.content').append(this.clock)
+			this.clock.width = options.size;
+			this.clock.height = options.size
+			// console.log(this.clock.width)
+			// this.clock.css('border','1px solid red')
+			this.ctx = this.clock.getContext("2d")
+			
+			
+			// console.log(this.ctx)
+			this.pi = Math.PI;
+			this.size = options.size
+			// 原型上的方法
+			this.init()
+			let _this = this
+			setInterval(function(){
+				_this.init()
+			},1000)
+			
+			
+		}
+		Clock.prototype = {
+			init (){
+				this.drawPan()
+				this.drawKedu()
+				this.ziti()
+				this.drawSP()
+				this.drawM()
+				this.drawH()
+				// this.drawM()
+			},
+			// 写文字
+			ziti(){
+				this.ctx.font="normal 30px 微软雅黑";//
+				this.ctx.textBaseline = "middle";// top  bottom
+				this.ctx.TreeView="#058"
+				this.ctx.textAlign = "center";//  
+				this.ctx.strokeText("ROLEX",150,150)//
+			},
+			// 画表盘
+			drawPan(){
+				// console.log(this.ctx.arc)
+				this.ctx.arc((this.size)/2,(this.size)/2,(this.size)/2,0,(this.pi)*2)
+				this.ctx.fillStyle = "#ddd"
+				this.ctx.fill()
+			},
+			// 画刻度
+			drawKedu(){
+				let w = 0;
+				let _this = this
+				for(let i = 0; i<60; i++){
+					w = i%5 ==0 ? 23:15
+
+					// console.log(w==23)
+					this.draw(function(){
+						// console.log(this)
+						
+						_this.ctx.translate(_this.size/2,_this.size/2)
+						// console.log(_this.size)
+						_this.ctx.rotate(i*_this.pi/30)
+						_this.ctx.strokeText("111",_this.size/2,_this.size/2)//
+						
+						_this.ctx.moveTo(_this.size/2-w,0)
+						_this.ctx.lineTo(_this.size/2-5,0)
+						_this.ctx.strokeStyle = 'blue'
+						_this.ctx.stroke()
+					})
+					
+				}
+			},
+			
+			// 写秒针
+			drawSP(){
+				let _this = this
+				this.draw(function(){
+					let s = new Date().getSeconds()
+					// console.log(s)
+					_this.ctx.translate(_this.size/2,_this.size/2)
+					_this.ctx.rotate(s*_this.pi/30-_this.pi/2)
+					_this.ctx.moveTo(0,0)
+					_this.ctx.lineTo(_this.size/2-25,0)
+					_this.ctx.strokeStyle = 'blue'
+					_this.ctx.stroke()
+				})
+				
+
+			},
+			// 分钟针
+			drawM(){
+				let _this = this
+				this.draw(function(){
+					let m = new Date().getMinutes()
+					// console.log(m)
+					_this.ctx.translate(_this.size/2,_this.size/2)
+					_this.ctx.rotate(m*_this.pi/30-_this.pi/2)
+					_this.ctx.moveTo(0,0)
+					_this.ctx.lineTo(_this.size/2-50,0)
+					_this.ctx.lineWidth = 2
+					_this.ctx.strokeStyle = 'red'
+					_this.ctx.stroke()
+				})
+				
+			},
+			// 时针
+			drawH(){
+				let _this = this
+				this.draw(function(){
+					let h = new Date().getHours()
+					// console.log(h)
+					_this.ctx.translate(_this.size/2,_this.size/2)
+					_this.ctx.rotate(h*_this.pi/30-_this.pi/2)
+					_this.ctx.moveTo(0,0)
+					_this.ctx.lineTo(_this.size/2-75,0)
+					_this.ctx.strokeStyle = 'skyblue'
+					_this.ctx.lineWidth = 3
+					_this.ctx.stroke()
+				})
+				
+			},
+			draw(cb){
+				this.ctx.save()
+				this.ctx.beginPath()
+				cb()
+				this.ctx.closePath()
+				this.ctx.restore()
+			}
+
+		}
+
+		new Clock('clock',{
+			size:300,
+			
+		})
+
+	</script>
+	
+</html>
